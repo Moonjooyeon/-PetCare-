@@ -1,0 +1,57 @@
+.terms-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+}
+
+.step-label {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.terms-box {
+    background-color: #e6e6e6;
+    padding: 80px 60px;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.terms-box button {
+    width: 260px;
+    height: 60px;
+    font-size: 18px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.bubble {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: #a678f7;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 4px white;
+}
+
+.top-right {
+    top: -24px;
+    right: -24px;
+}
+
+.bottom-right {
+    bottom: -24px;
+    right: -24px;
+}
