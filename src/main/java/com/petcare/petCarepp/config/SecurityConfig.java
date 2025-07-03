@@ -31,8 +31,11 @@ public class SecurityConfig {
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/login/**",
-                                "/oauth2/**"
-                        ).permitAll()
+                                "/oauth2/**",
+                                "/admin/timeline",
+                                "/api/auth/**",
+                                "/admin/notice"
+                                ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

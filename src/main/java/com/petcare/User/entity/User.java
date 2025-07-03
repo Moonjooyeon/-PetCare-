@@ -6,7 +6,7 @@ import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "user") // DB의 테이블명이 user라면 반드시 명시!
+@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor

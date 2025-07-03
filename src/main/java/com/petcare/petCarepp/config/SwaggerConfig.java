@@ -1,7 +1,9 @@
 package com.petcare.petCarepp.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +12,14 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+        Info info = new Info()
+                .title("API Document")
+                .version("v0.0.1")
+                .description("API 명세서입니다.");
+
         return new OpenAPI()
-                .info(new Info()
-                        .title("🐾 PETCARE API 명세서")
-                        .version("1.0.0")
-                        .description("반려동물 병원 기록/관리 시스템의 공식 API 문서입니다.")
-                );
+                .components(new Components())
+                .addServersItem(new Server().url("/")) // 추가
+                .info(info);
     }
 }
