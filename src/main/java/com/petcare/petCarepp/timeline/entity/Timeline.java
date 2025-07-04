@@ -42,4 +42,8 @@ public class Timeline {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public String getDate() {
+        return createdAt != null ? createdAt.toLocalDate().toString() : "";
+    }
 }

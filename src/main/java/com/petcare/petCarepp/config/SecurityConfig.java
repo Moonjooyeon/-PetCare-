@@ -1,27 +1,31 @@
 package com.petcare.petCarepp.config;
 
 import com.petcare.petCarepp.auth.CustomOAuth2User;
-import com.petcare.petCarepp.service.CustomOAuth2UserService;
 import com.petcare.petCarepp.jwt.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import com.petcare.petCarepp.service.CustomOAuth2UserService;
+import lombok.Generated;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class SecurityConfig {
-
     private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults()) // ✅ CORS 활성화 추가
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -35,7 +39,7 @@ public class SecurityConfig {
                                 "/admin/timeline",
                                 "/api/auth/**",
                                 "/admin/notice"
-                                ).permitAll()
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -55,7 +59,26 @@ public class SecurityConfig {
                             response.sendRedirect(redirectUrl);
                         })
                 );
-
         return http.build();
+    }
+
+    // ✅ Spring Security용 CORS 설정 추가
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // withCredentials 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Generated
+    public SecurityConfig(final CustomOAuth2UserService customOAuth2UserService, final JwtTokenProvider jwtTokenProvider) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 }

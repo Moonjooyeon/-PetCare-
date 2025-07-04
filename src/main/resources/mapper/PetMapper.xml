@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.petcare.petCarepp.pet.mapper.PetMapper">
+
+    <insert id="insertPet" parameterType="com.petcare.petCarepp.pet.DTO.PetRequestDto">
+        INSERT INTO pet (
+            user_id, profile_image, type, name, breed, gender, memo,
+            birthdate, neutered, createdAt, updatedAt
+        ) VALUES (
+                     #{userId}, #{profileImage}, #{type}, #{name}, #{breed}, #{gender}, #{memo},
+                     #{birthdate}, #{neutered}, NOW(), NOW()
+                 )
+    </insert>
+
+    <select id="selectPetById" resultType="com.petcare.petCarepp.pet.DTO.PetRequestDto">
+        SELECT
+            id,
+            user_id,
+            profile_image,
+            type,
+            name,
+            breed,
+            gender,
+            memo,
+            birthdate,
+            neutered,
+            createdAt,
+            updatedAt
+        FROM pet
+        WHERE id = #{petId}
+    </select>
+
+    <update id="updatePet" parameterType="com.petcare.petCarepp.pet.DTO.PetRequestDto">
+        UPDATE pet
+        SET
+            profile_image = #{profileImage},
+            type = #{type},
+            name = #{name},
+            breed = #{breed},
+            gender = #{gender},
+            memo = #{memo},
+            birthdate = #{birthdate},
+            neutered = #{neutered},
+            updatedAt = NOW()
+        WHERE id = #{id}
+    </update>
+
+
+</mapper>

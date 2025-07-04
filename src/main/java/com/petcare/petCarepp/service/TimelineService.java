@@ -1,5 +1,6 @@
 package com.petcare.petCarepp.service;
 
+import com.petcare.petCarepp.timeline.DTO.TimelineResponse;
 import com.petcare.petCarepp.timeline.repository.TimelineRepository;
 import com.petcare.petCarepp.Hospital.repository.HospitalRepository;
 import com.petcare.petCarepp.timeline.entity.Timeline;
@@ -11,6 +12,9 @@ import com.petcare.petCarepp.global.util.S3Uploader; // or 너가 정의한 경�
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class TimelineService {
@@ -19,6 +23,14 @@ public class TimelineService {
     private final HospitalRepository hospitalRepository;
     private final S3Uploader s3Uploader; // 이미지 업로드 유틸
 
+
+    public List<TimelineResponse> getTimelineByHospitalId(Long hospitalId) {
+        List<Timeline> timelines = timelineRepository.findByHospitalId(hospitalId);
+
+        return timelines.stream()
+                .map(t -> new TimelineResponse(t.getDate(), t.getContent()))
+                .collect(Collectors.toList());
+    }
     public Long createTimeline(TimelineCreateRequest request) {
         Hospital hospital = hospitalRepository.findById(request.getHospitalId())
                 .orElseThrow(() -> new RuntimeException("병원 없음"));

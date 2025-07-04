@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface TimelineRepository extends JpaRepository<Timeline, Long> {
     List<Timeline> findAllByHospitalId(Long hospitalId);
+
+    List<Timeline> findByHospitalId(Long hospitalId);
 }
 
