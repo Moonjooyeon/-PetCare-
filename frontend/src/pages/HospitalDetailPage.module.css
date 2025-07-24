@@ -1,0 +1,83 @@
+.container {
+    background: #eee;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+}
+
+.card {
+    width: 100%;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 40px;
+}
+
+.imageBox {
+    width: 100%;
+    height: 250px;
+    background: #ccc;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.imageBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.followBtn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.yellowBox {
+    width: 100%;
+    background: yellow;
+    padding: 20px;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.pinkBox {
+    width: 100%;
+    background: pink;
+    padding: 20px;
+    margin-top: 16px;
+    border-radius: 8px;
+}
+
+.footer {
+    width: 100%;
+    background: #9d7b77;
+    padding: 16px;
+    text-align: center;
+    color: #fff;
+    margin-top: auto;
+}
+
+.footerBtn {
+    background: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
