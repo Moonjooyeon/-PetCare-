@@ -7,6 +7,7 @@ import lombok.Generated;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,34 +29,16 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // ✅ CORS 활성화 추가
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/api-docs/**",
-                                "/v3/api-docs/**",
-                                "/login/**",
-                                "/oauth2/**",
-                                "/admin/timeline",
-                                "/api/auth/**",
-                                "/admin/notice"
-                        ).permitAll()
+                        .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**", "/login/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
+                        .userInfoEndpoint(userInfo -> userInfo.userService(this.customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
                             CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-
-                            // JWT 토큰 생성
                             String token = jwtTokenProvider.generateToken(oauthUser.getEmail());
-
-                            // 프론트엔드 리다이렉션 주소로 이동
-                            String redirectUrl = "http://localhost:5173/welcome?token=" + token +
-                                    "&userName=" + URLEncoder.encode(oauthUser.getName(), StandardCharsets.UTF_8);
-
+                            String redirectUrl = "http://localhost:5173/welcome?token=" + token
+                                    + "&userName=" + URLEncoder.encode(oauthUser.getName(), StandardCharsets.UTF_8);
                             response.sendRedirect(redirectUrl);
                         })
                 );

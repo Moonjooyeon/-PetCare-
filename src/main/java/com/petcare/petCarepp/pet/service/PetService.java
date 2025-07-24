@@ -5,6 +5,8 @@ import com.petcare.petCarepp.pet.mapper.PetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PetService {
@@ -23,5 +25,8 @@ public class PetService {
         petMapper.updatePet(dto);
     }
 
+    public List<PetRequestDto> getPetsByUserId(Long userId) {
+        return petMapper.selectPetsByUserId(userId);
+    }
 }
 

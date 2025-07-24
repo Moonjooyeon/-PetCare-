@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.petcare.petCarepp.Hospital.mapper.HospitalMapper">
+
+    <!-- 병원 ID로 조회 -->
+    <select id="findById" resultType="com.petcare.petCarepp.Hospital.entity.Hospital">
+        SELECT * FROM hospital WHERE id = #{id}
+    </select>
+
+    <!-- 기존 메서드 (placeId로 조회) -->
+    <select id="findByPlaceId" resultType="com.petcare.petCarepp.Hospital.entity.Hospital">
+        SELECT * FROM hospital WHERE place_id = #{placeId}
+    </select>
+
+    <!-- 병원 등록 -->
+    <insert id="insert" parameterType="com.petcare.petCarepp.Hospital.entity.Hospital">
+        INSERT INTO hospital (
+            place_id, name, address, lat, lng,
+            specialties, description, profile_image,
+            is_mock, registered_by, created_at, updated_at
+        ) VALUES (
+                     #{placeId},
+                     #{name},
+                     #{address},
+                     #{lat},
+                     #{lng},
+                     '기본값',                         -- specialties 상수로 고정
+                     '카카오 동기화 병원',             -- description 상수
+                     NULL,
+                     #{isMock},
+                     #{registeredBy},
+                     NOW(), NOW()
+                 )
+    </insert>
+
+
+</mapper>

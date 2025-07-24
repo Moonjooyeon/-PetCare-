@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.petcare.petCarepp.record.mapper.RecordMapper">
+    <insert id="insertRecord" parameterType="com.petcare.petCarepp.record.dto.RecordRequest">
+        INSERT INTO record (
+            user_id, pet_id, hospital_id, date, symptoms, diagnosis,
+            next_schedule, memo, image_url, place_id, hospital_name
+        ) VALUES (
+                     #{userId}, #{petId}, #{hospitalId}, #{date, jdbcType=DATE, javaType=java.time.LocalDate}, #{symptoms}, #{diagnosis},
+                     #{nextSchedule, jdbcType=DATE, javaType=java.time.LocalDate}, #{memo}, #{imageUrl}, #{placeId}, #{hospitalName}
+                 )
+    </insert>
+
+
+    <!-- ✅ resultMap 명시적 선언 -->
+    <resultMap id="RecordResponseMap" type="com.petcare.petCarepp.record.dto.RecordResponse">
+        <result property="date" column="date" />
+        <result property="nextSchedule" column="next_schedule" />
+        <result property="symptoms" column="symptoms" />
+        <result property="diagnosis" column="diagnosis" />
+        <result property="hospitalName" column="hospitalName" />
+    </resultMap>
+
+    <select id="findByUserId" resultMap="RecordResponseMap">
+        SELECT
+            r.date,
+            r.symptoms,
+            r.diagnosis,
+            r.next_schedule,
+            h.name AS hospitalName
+        FROM record r
+                 LEFT JOIN hospital h ON r.hospital_id = h.id
+        WHERE r.user_id = #{userId}
+    </select>
+
+
+
+
+
+</mapper>

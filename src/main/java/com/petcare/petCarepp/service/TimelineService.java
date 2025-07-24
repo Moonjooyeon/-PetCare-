@@ -1,5 +1,7 @@
 package com.petcare.petCarepp.service;
 
+import com.petcare.petCarepp.record.repository.RecordRepository;
+import com.petcare.petCarepp.timeline.DTO.TimelineCardResponse;
 import com.petcare.petCarepp.timeline.DTO.TimelineResponse;
 import com.petcare.petCarepp.timeline.repository.TimelineRepository;
 import com.petcare.petCarepp.Hospital.repository.HospitalRepository;
@@ -12,6 +14,8 @@ import com.petcare.petCarepp.global.util.S3Uploader; // or 너가 정의한 경�
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +26,7 @@ public class TimelineService {
     private final TimelineRepository timelineRepository;
     private final HospitalRepository hospitalRepository;
     private final S3Uploader s3Uploader; // 이미지 업로드 유틸
+    private final RecordRepository recordRepository;
 
 
     public List<TimelineResponse> getTimelineByHospitalId(Long hospitalId) {
@@ -68,5 +73,36 @@ public class TimelineService {
     public void deleteTimeline(Long id) {
         timelineRepository.deleteById(id);
     }
+
+    public List<TimelineCardResponse> getTimelineCardsForUser(Long userId) {
+        List<Long> hospitalIds = recordRepository.findHospitalIdsWithRecords(userId);
+        List<TimelineCardResponse> cards = new ArrayList<>();
+
+        for (Long hospitalId : hospitalIds) {
+            Hospital hospital = hospitalRepository.findById(hospitalId)
+                    .orElse(null);
+            if (hospital == null) continue;
+
+            List<Timeline> timelines = timelineRepository.findByHospitalId(hospitalId);
+            if (timelines.isEmpty()) continue;
+
+            Timeline recent = timelines.stream()
+                    .max(Comparator.comparing(Timeline::getCreatedAt))
+                    .orElse(null);
+
+            if (recent != null) {
+                cards.add(new TimelineCardResponse(
+                        hospital.getId(),
+                        hospital.getName(),
+                        hospital.getProfileImage(),
+                        recent.getContent(),
+                        recent.getDate()
+                ));
+            }
+        }
+
+        return cards;
+    }
+
 }
 

@@ -1,13 +1,17 @@
 package com.petcare.petCarepp.controller;
 
+import com.petcare.petCarepp.auth.CustomOAuth2User;
 import com.petcare.petCarepp.service.TimelineService;
+import com.petcare.petCarepp.timeline.DTO.TimelineCardResponse;
 import com.petcare.petCarepp.timeline.DTO.TimelineCreateRequest;
 import com.petcare.petCarepp.timeline.DTO.TimelineUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,5 +40,12 @@ public class AdminTimelineController {
         timelineService.deleteTimeline(timelineId);
         return ResponseEntity.ok().body(Map.of("code", 200, "result", "삭제 성공"));
     }
+
+    @GetMapping("/api/hospitals/timeline/cards")
+    public ResponseEntity<?> getTimelineCards(@AuthenticationPrincipal CustomOAuth2User user) {
+        List<TimelineCardResponse> result = timelineService.getTimelineCardsForUser(user.getId());
+        return ResponseEntity.ok(Map.of("code", 200, "result", result));
+    }
+
 }
 

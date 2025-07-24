@@ -23,22 +23,33 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        OAuth2User user = super.loadUser(request);
+        OAuth2User oauth2User = super.loadUser(request);
 
-        String email = user.getAttribute("email");
-        String name = user.getAttribute("name");
+        // ✅ 구글은 email, name 바로 접근 가능
+        String email = oauth2User.getAttribute("email");
+        String name = oauth2User.getAttribute("name");
 
-        userRepository.findByEmail(email).orElseGet(() ->
+        // ✅ DB 저장 or 조회
+        User savedUser = userRepository.findByEmail(email).orElseGet(() ->
                 userRepository.save(User.builder()
                         .email(email)
-                        .password("") // OAuth 사용자이므로 패스워드는 빈 문자열
+                        .password("") // OAuth 사용자 비번 없음
                         .oauthProvider("google")
-                        .name(name)
+                        .name(name != null ? name : "이름없음")
                         .profileImage(null)
                         .role("USER")
                         .build())
         );
 
-        return new CustomOAuth2User(user); // OAuth2User를 래핑해서 반환
+        // ✅ CustomOAuth2User로 감싸서 userId 전달까지 완료
+        return new CustomOAuth2User(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getName(),
+                savedUser.getRole(),
+                oauth2User.getAttributes()
+        );
     }
+
+
 }

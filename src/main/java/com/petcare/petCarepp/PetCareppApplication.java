@@ -17,11 +17,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {
 		"com.petcare.petCarepp.Hospital.repository",
 		"com.petcare.petCarepp.timeline.repository",
+		"com.petcare.petCarepp.record.repository",
+		"com.petcare.petCarepp.follow.repository",
 		"com.petcare.User.Repository" //
 })
 @EntityScan(basePackages = {
 		"com.petcare.petCarepp.Hospital.entity",
 		"com.petcare.petCarepp.timeline.entity",
+		"com.petcare.petCarepp.record.Entity",
+		"com.petcare.petCarepp.follow.Entity",
 		"com.petcare.User.entity" //
 })
 public class PetCareppApplication {
