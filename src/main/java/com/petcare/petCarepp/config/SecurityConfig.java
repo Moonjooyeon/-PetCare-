@@ -1,6 +1,7 @@
 package com.petcare.petCarepp.config;
 
 import com.petcare.petCarepp.auth.CustomOAuth2User;
+import com.petcare.petCarepp.jwt.JwtAuthenticationFilter;
 import com.petcare.petCarepp.jwt.JwtTokenProvider;
 import com.petcare.petCarepp.service.CustomOAuth2UserService;
 import lombok.Generated;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,13 +34,17 @@ public class SecurityConfig {
                         .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**", "/login/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(this.customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
                             CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                            String token = jwtTokenProvider.generateToken(oauthUser.getEmail());
+
+                            String token = jwtTokenProvider.generateToken(oauthUser.getId(), oauthUser.getEmail());
+
                             String redirectUrl = "http://localhost:5173/welcome?token=" + token
-                                    + "&userName=" + URLEncoder.encode(oauthUser.getName(), StandardCharsets.UTF_8);
+                                    + "&userName=" + URLEncoder.encode(oauthUser.getName(), StandardCharsets.UTF_8)
+                                    + "&userId=" + oauthUser.getId();;
                             response.sendRedirect(redirectUrl);
                         })
                 );

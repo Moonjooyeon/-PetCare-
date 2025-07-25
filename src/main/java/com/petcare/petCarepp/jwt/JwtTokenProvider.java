@@ -24,8 +24,10 @@ public class JwtTokenProvider {
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    public String generateToken(String email) {
+    public String generateToken(Long userId,String email) {
         Date now = new Date();
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("userId", userId);
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
